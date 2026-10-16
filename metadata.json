@@ -1,0 +1,6 @@
+{
+  "name": "Tk site guide Ai",
+  "description": "An internal AI-powered website monitoring system that alerts you when websites fail and generates daily AI performance health reports using Google Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

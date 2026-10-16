@@ -1,0 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Custom modern scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.2);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
+}
+
+/* Immersive UI Custom Classes */
+.glass {
+  background: rgba(15, 23, 42, 0.6) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.neon-border-blue {
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+.status-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+.gradient-bg {
+  background: radial-gradient(circle at 50% -20%, #1e293b 0%, #05070a 100%) !important;
+}
+
+/* Official Google Sign-In Material Button Styling */
+.gsi-material-button {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-appearance: none;
+  background-color: #f2f2f2;
+  background-image: none;
+  border: none;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  color: #1f1f1f;
+  cursor: pointer;
+  font-family: 'Roboto', arial, sans-serif;
+  font-size: 14px;
+  height: 40px;
+  letter-spacing: 0.25px;
+  outline: none;
+  overflow: hidden;
+  padding: 0 16px;
+  position: relative;
+  text-align: center;
+  -webkit-transition: background-color .218s, border-color .218s, box-shadow .218s;
+  transition: background-color .218s, border-color .218s, box-shadow .218s;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: auto;
+  max-width: 400px;
+  min-width: min-content;
+}
+
+.gsi-material-button .gsi-material-button-icon {
+  height: 20px;
+  margin-right: 12px;
+  min-width: 20px;
+  width: 20px;
+}
+
+.gsi-material-button .gsi-material-button-content-wrapper {
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-box-align: center;
+  display: flex;
+  -webkit-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  height: 100%;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.gsi-material-button .gsi-material-button-contents {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  font-family: 'Google Sans', arial, sans-serif;
+  font-weight: 500;
+  overflow: hidden;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.gsi-material-button .gsi-material-button-state {
+  -webkit-transition: opacity .218s;
+  transition: opacity .218s;
+  bottom: 0;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.gsi-material-button:hover {
+  -webkit-box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  background-color: #f8f8f8;
+}
+
+.gsi-material-button:hover .gsi-material-button-state {
+  background-color: #303030;
+  opacity: 0.04;
+}
+
+.gsi-material-button:focus {
+  border: none;
+  outline: none;
+}
+
+.gsi-material-button:focus .gsi-material-button-state {
+  background-color: #303030;
+  opacity: 0.12;
+}
+
+.gsi-material-button:active .gsi-material-button-state {
+  background-color: #303030;
+  opacity: 0.2;
+}
+
+.gsi-material-button:disabled {
+  cursor: default;
+  background-color: #ffffff1f;
+  color: #ffffff3d;
+}
+
+.gsi-material-button:disabled .gsi-material-button-state {
+  clear: both;
+}
+
+/* LIGHT THEME OVERRIDES */
+.light-theme {
+  --color-slate-200: #1e293b;
+  --color-slate-300: #334155;
+  --color-slate-400: #475569;
+  --color-slate-500: #64748b;
+  color: #1e293b !important;
+}
+
+/* Base text color overrides */
+.light-theme .text-slate-100 { color: #0f172a !important; }
+.light-theme .text-slate-200 { color: #1e293b !important; }
+.light-theme .text-slate-300 { color: #334155 !important; }
+.light-theme .text-slate-400 { color: #475569 !important; }
+.light-theme .text-slate-500 { color: #64748b !important; }
+
+/* Let's make sure white text that's used for UI text (not on colored buttons) is darkened */
+.light-theme .text-white:not(
+  button, 
+  button *, 
+  a, 
+  a *, 
+  .bg-blue-600, 
+  .bg-blue-600 *, 
+  .bg-emerald-600, 
+  .bg-emerald-600 *, 
+  .bg-emerald-500, 
+  .bg-emerald-500 *, 
+  .bg-rose-600, 
+  .bg-rose-600 *, 
+  .bg-rose-500, 
+  .bg-rose-500 *, 
+  .bg-red-600, 
+  .bg-red-600 *
+) {
+  color: #0f172a !important;
+}
+
+/* Background overrides */
+.light-theme.gradient-bg,
+.light-theme .gradient-bg {
+  background: radial-gradient(circle at 50% -20%, #fcfdfd 0%, #f1f5f9 100%) !important;
+}
+
+.light-theme .glass {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Overriding other background helpers */
+.light-theme .bg-slate-950,
+.light-theme .bg-slate-950\/30,
+.light-theme .bg-slate-950\/40,
+.light-theme .bg-slate-950\/60,
+.light-theme .bg-slate-950\/70,
+.light-theme .bg-slate-950\/90,
+.light-theme .bg-slate-950\/95,
+.light-theme .bg-slate-900\/60,
+.light-theme .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+
+/* Some of these should have a soft light grey background instead of pure white */
+.light-theme .bg-slate-950\/30,
+.light-theme .bg-slate-950\/40,
+.light-theme .bg-slate-950\/60,
+.light-theme .bg-slate-900\/60,
+.light-theme .bg-white\/5 {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+/* Border overrides */
+.light-theme .border-white\/10,
+.light-theme .border-white\/5,
+.light-theme .border-white\/20,
+.light-theme .border-white\/25 {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Hover effects */
+.light-theme .hover\:bg-white\/5:hover,
+.light-theme .hover\:bg-white\/10:hover {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+}
+
+.light-theme .hover\:text-white:hover {
+  color: #0f172a !important;
+}
+
+/* Header style override */
+.light-theme header {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.08) !important;
+  color: #0f172a !important;
+}
+
+/* Form input, textarea and select overrides */
+.light-theme input,
+.light-theme textarea,
+.light-theme select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
+}
+
+.light-theme input::placeholder,
+.light-theme textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light-theme select option,
+.light-theme select > option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* Colors text adjustments */
+.light-theme .text-blue-400 { color: #1d4ed8 !important; }
+.light-theme .text-emerald-400 { color: #15803d !important; }
+.light-theme .text-rose-400 { color: #b91c1c !important; }
+.light-theme .text-rose-500 { color: #991b1b !important; }
+.light-theme .text-amber-400 { color: #a16207 !important; }
+
+/* Status pulse in light theme */
+.light-theme .status-pulse {
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* For prose markdown */
+.light-theme .markdown-body.prose {
+  color: #334155 !important;
+}
+.light-theme .markdown-body.prose h1,
+.light-theme .markdown-body.prose h2,
+.light-theme .markdown-body.prose h3,
+.light-theme .markdown-body.prose h4,
+.light-theme .markdown-body.prose strong {
+  color: #0f172a !important;
+}
+.light-theme .markdown-body.prose code {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+  color: #1d4ed8 !important;
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+
+

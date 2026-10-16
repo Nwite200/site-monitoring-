@@ -1,0 +1,172 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming(req) {
+      return req.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 1. Websites Collection
+    match /websites/{siteId} {
+      allow read: if true;
+      allow create: if isValidId(siteId) && isValidWebsite(incoming(request));
+      allow update: if isValidId(siteId) && isValidWebsite(incoming(request));
+      allow delete: if isValidId(siteId);
+    }
+
+    function isValidWebsite(data) {
+      return data.keys().hasAll(['id', 'name', 'url', 'clientName', 'contactEmail', 'monitoringInterval', 'enabled', 'status', 'consecutiveFailures', 'alertSent', 'createdAt'])
+        && data.keys().size() <= 13
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 200
+        && data.url is string && data.url.size() <= 2000
+        && data.clientName is string && data.clientName.size() <= 200
+        && data.contactEmail is string && data.contactEmail.size() <= 320
+        && data.monitoringInterval is int && (data.monitoringInterval == 1 || data.monitoringInterval == 2 || data.monitoringInterval == 5 || data.monitoringInterval == 10 || data.monitoringInterval == 15 || data.monitoringInterval == 30 || data.monitoringInterval == 60)
+        && data.enabled is bool
+        && data.status is string && (data.status == 'PENDING' || data.status == 'ONLINE' || data.status == 'OFFLINE' || data.status == 'ERROR')
+        && data.consecutiveFailures is int && data.consecutiveFailures >= 0
+        && data.alertSent is bool
+        && data.createdAt is string && data.createdAt.size() <= 128;
+    }
+
+    // 2. Telemetry Logs Collection
+    match /monitoring_logs/{logId} {
+      allow read: if true;
+      allow create: if isValidId(logId) && isValidLog(incoming(request));
+      allow update: if false;
+      allow delete: if isValidId(logId);
+    }
+
+    function isValidLog(data) {
+      return data.keys().hasAll(['id', 'websiteId', 'websiteName', 'url', 'status', 'responseTime', 'checkedAt'])
+        && data.keys().size() <= 8
+        && data.id is string && data.id.size() <= 128
+        && data.websiteId is string && data.websiteId.size() <= 128
+        && data.websiteName is string && data.websiteName.size() <= 200
+        && data.url is string && data.url.size() <= 2000
+        && data.status is string && (data.status == 'ONLINE' || data.status == 'OFFLINE' || data.status == 'ERROR')
+        && data.responseTime is int && data.responseTime >= 0
+        && data.checkedAt is string && data.checkedAt.size() <= 128;
+    }
+
+    // 3. Alerts Dispatch History Collection
+    match /alerts/{alertId} {
+      allow read: if true;
+      allow create: if isValidId(alertId) && isValidAlert(incoming(request));
+      allow update: if false;
+      allow delete: if isValidId(alertId);
+    }
+
+    function isValidAlert(data) {
+      return data.keys().hasAll(['id', 'websiteId', 'websiteName', 'url', 'type', 'timestamp', 'details', 'emailSent', 'recipientEmail'])
+        && data.keys().size() <= 9
+        && data.id is string && data.id.size() <= 128
+        && data.websiteId is string && data.websiteId.size() <= 128
+        && data.websiteName is string && data.websiteName.size() <= 200
+        && data.url is string && data.url.size() <= 2000
+        && data.type is string && (data.type == 'DOWN' || data.type == 'RECOVERY')
+        && data.timestamp is string && data.timestamp.size() <= 128
+        && data.details is string && data.details.size() <= 4000
+        && data.emailSent is bool
+        && data.recipientEmail is string && data.recipientEmail.size() <= 320;
+    }
+
+    // 4. Daily Reports Collection
+    match /daily_reports/{reportId} {
+      allow read: if true;
+      allow create: if isValidId(reportId) && isValidReport(incoming(request));
+      allow update: if false;
+      allow delete: if isValidId(reportId);
+    }
+
+    function isValidReport(data) {
+      return data.keys().hasAll(['id', 'date', 'generatedAt', 'summary', 'healthScore', 'totalChecks', 'uptimePercentage', 'slowRequestsCount', 'failuresCount'])
+        && data.keys().size() <= 9
+        && data.id is string && data.id.size() <= 128
+        && data.date is string && data.date.size() <= 128
+        && data.generatedAt is string && data.generatedAt.size() <= 128
+        && data.summary is string && data.summary.size() <= 100000
+        && data.healthScore is int && data.healthScore >= 0 && data.healthScore <= 100
+        && data.totalChecks is int && data.totalChecks >= 0
+        && (data.uptimePercentage is float || data.uptimePercentage is int) && data.uptimePercentage >= 0 && data.uptimePercentage <= 100
+        && data.slowRequestsCount is int && data.slowRequestsCount >= 0
+        && data.failuresCount is int && data.failuresCount >= 0;
+    }
+
+    // 5. Weekly Reports Collection
+    match /weekly_reports/{reportId} {
+      allow read: if true;
+      allow create: if isValidId(reportId) && isValidExtendedReport(incoming(request), 'weekly');
+      allow update: if false;
+      allow delete: if isValidId(reportId);
+    }
+
+    // 6. Monthly Reports Collection
+    match /monthly_reports/{reportId} {
+      allow read: if true;
+      allow create: if isValidId(reportId) && isValidExtendedReport(incoming(request), 'monthly');
+      allow update: if false;
+      allow delete: if isValidId(reportId);
+    }
+
+    // 7. Yearly Reports Collection
+    match /yearly_reports/{reportId} {
+      allow read: if true;
+      allow create: if isValidId(reportId) && isValidExtendedReport(incoming(request), 'yearly');
+      allow update: if false;
+      allow delete: if isValidId(reportId);
+    }
+
+    function isValidExtendedReport(data, periodValue) {
+      return data.keys().hasAll(['id', 'date', 'generatedAt', 'summary', 'healthScore', 'totalChecks', 'uptimePercentage', 'slowRequestsCount', 'failuresCount', 'period'])
+        && data.keys().size() <= 10
+        && data.id is string && data.id.size() <= 128
+        && data.date is string && data.date.size() <= 128
+        && data.generatedAt is string && data.generatedAt.size() <= 128
+        && data.summary is string && data.summary.size() <= 100000
+        && data.healthScore is int && data.healthScore >= 0 && data.healthScore <= 100
+        && data.totalChecks is int && data.totalChecks >= 0
+        && (data.uptimePercentage is float || data.uptimePercentage is int) && data.uptimePercentage >= 0 && data.uptimePercentage <= 100
+        && data.slowRequestsCount is int && data.slowRequestsCount >= 0
+        && data.failuresCount is int && data.failuresCount >= 0
+        && data.period is string && data.period == periodValue;
+    }
+
+    // 8. Sent Reports Collection
+    match /sent_reports/{statusId} {
+      allow read: if true;
+      allow create: if isValidId(statusId) && isValidSentReport(incoming(request));
+      allow update: if false;
+      allow delete: if isValidId(statusId);
+    }
+
+    function isValidSentReport(data) {
+      return data.keys().hasAll(['id', 'type', 'sentAt', 'emailSent', 'recipient'])
+        && data.keys().size() <= 8
+        && data.id is string && data.id.size() <= 128
+        && data.type is string && (data.type == 'daily' || data.type == 'weekly' || data.type == 'monthly' || data.type == 'yearly')
+        && data.sentAt is string && data.sentAt.size() <= 128
+        && data.emailSent is bool
+        && data.recipient is string && data.recipient.size() <= 320
+        && (data.type != 'daily' || (data.keys().hasAll(['date']) && data.date is string && data.date.size() <= 128))
+        && (data.type != 'weekly' || (data.keys().hasAll(['week', 'year']) && data.week is int && data.year is int))
+        && (data.type != 'monthly' || (data.keys().hasAll(['month', 'year']) && data.month is int && data.year is int))
+        && (data.type != 'yearly' || (data.keys().hasAll(['year']) && data.year is int));
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "short_name": "Tk site guide",
+  "name": "Tk site guide Ai",
+  "icons": [
+    {
+      "src": "/icon.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon.jpg",
+      "type": "image/jpeg",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "display": "standalone",
+  "orientation": "portrait"
+}

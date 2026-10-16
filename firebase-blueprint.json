@@ -1,0 +1,144 @@
+{
+  "entities": {
+    "Website": {
+      "title": "Website",
+      "description": "A website resource monitored by SiteGuard AI.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique site ID" },
+        "name": { "type": "string", "description": "Human readable name of the site" },
+        "url": { "type": "string", "description": "Fully qualified target URL" },
+        "clientName": { "type": "string", "description": "Name of client owner" },
+        "contactEmail": { "type": "string", "description": "Alert notification recipient email" },
+        "monitoringInterval": { "type": "integer", "description": "Monitoring frequency in minutes" },
+        "enabled": { "type": "boolean", "description": "Whether checking is active" },
+        "status": { "type": "string", "enum": ["PENDING", "ONLINE", "OFFLINE", "ERROR"], "description": "Last known status of the website" },
+        "consecutiveFailures": { "type": "integer", "description": "Number of consecutive failures recorded" },
+        "alertSent": { "type": "boolean", "description": "Whether a downtime alert has been dispatched" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Record creation timestamp" },
+        "lastChecked": { "type": "string", "format": "date-time", "description": "Last execution timestamp" },
+        "lastResponseTime": { "type": "integer", "description": "Latency of the last check in milliseconds" }
+      },
+      "required": ["id", "name", "url", "clientName", "contactEmail", "monitoringInterval", "enabled", "status", "consecutiveFailures", "alertSent", "createdAt"]
+    },
+    "MonitoringLog": {
+      "title": "MonitoringLog",
+      "description": "Historical telemetry ping logs.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique check ID" },
+        "websiteId": { "type": "string", "description": "Reference website ID" },
+        "websiteName": { "type": "string", "description": "Snapshot name of website" },
+        "url": { "type": "string", "description": "Snapshot URL of website" },
+        "status": { "type": "string", "enum": ["ONLINE", "OFFLINE", "ERROR"], "description": "Observed status" },
+        "responseTime": { "type": "integer", "description": "Ping latency in milliseconds" },
+        "checkedAt": { "type": "string", "format": "date-time", "description": "Ping execution timestamp" },
+        "errorMessage": { "type": "string", "description": "Optional error message if failed" }
+      },
+      "required": ["id", "websiteId", "websiteName", "url", "status", "responseTime", "checkedAt"]
+    },
+    "Alert": {
+      "title": "Alert",
+      "description": "Down and recovery email dispatch log.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique alert ID" },
+        "websiteId": { "type": "string", "description": "Reference website ID" },
+        "websiteName": { "type": "string", "description": "Snapshot name of website" },
+        "url": { "type": "string", "description": "Snapshot URL of website" },
+        "type": { "type": "string", "enum": ["DOWN", "RECOVERY"], "description": "Incident type" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Alert dispatch timestamp" },
+        "details": { "type": "string", "description": "Dynamic notification description" },
+        "emailSent": { "type": "boolean", "description": "Whether delivery was successful" },
+        "recipientEmail": { "type": "string", "description": "Recipient address" }
+      },
+      "required": ["id", "websiteId", "websiteName", "url", "type", "timestamp", "details", "emailSent", "recipientEmail"]
+    },
+    "DailyReport": {
+      "title": "DailyReport",
+      "description": "Gemini AI daily performance insights report.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique report ID" },
+        "date": { "type": "string", "description": "Calendar date covered" },
+        "generatedAt": { "type": "string", "format": "date-time", "description": "Generation timestamp" },
+        "summary": { "type": "string", "description": "Gemini AI Markdown-formatted analysis text" },
+        "healthScore": { "type": "integer", "description": "Consolidated health score from 0 to 100" },
+        "totalChecks": { "type": "integer", "description": "Total logs processed" },
+        "uptimePercentage": { "type": "number", "description": "Calculated uptime percentage" },
+        "slowRequestsCount": { "type": "integer", "description": "Number of warning latency pings" },
+        "failuresCount": { "type": "integer", "description": "Number of error or offline pings" }
+      },
+      "required": ["id", "date", "generatedAt", "summary", "healthScore", "totalChecks", "uptimePercentage", "slowRequestsCount", "failuresCount"]
+    },
+    "ExtendedReport": {
+      "title": "ExtendedReport",
+      "description": "Weekly, Monthly, or Yearly Gemini AI performance insights report.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique report ID" },
+        "date": { "type": "string", "description": "Calendar date or end-date of period covered" },
+        "generatedAt": { "type": "string", "format": "date-time", "description": "Generation timestamp" },
+        "summary": { "type": "string", "description": "Gemini AI Markdown-formatted analysis text" },
+        "healthScore": { "type": "integer", "description": "Consolidated health score from 0 to 100" },
+        "totalChecks": { "type": "integer", "description": "Total logs processed" },
+        "uptimePercentage": { "type": "number", "description": "Calculated uptime percentage" },
+        "slowRequestsCount": { "type": "integer", "description": "Number of warning latency pings" },
+        "failuresCount": { "type": "integer", "description": "Number of error or offline pings" },
+        "period": { "type": "string", "enum": ["weekly", "monthly", "yearly"], "description": "Report interval category" }
+      },
+      "required": ["id", "date", "generatedAt", "summary", "healthScore", "totalChecks", "uptimePercentage", "slowRequestsCount", "failuresCount", "period"]
+    },
+    "SentReport": {
+      "title": "SentReport",
+      "description": "Scheduler tracker audit log for dispatched emails to prevent double-sends.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique tracking ID" },
+        "type": { "type": "string", "enum": ["daily", "weekly", "monthly", "yearly"], "description": "SLA reporting cycle" },
+        "date": { "type": "string", "description": "Optional coverage date" },
+        "week": { "type": "integer", "description": "Optional coverage week" },
+        "month": { "type": "integer", "description": "Optional coverage month" },
+        "year": { "type": "integer", "description": "Optional coverage year" },
+        "sentAt": { "type": "string", "format": "date-time", "description": "Audit dispatch timestamp" },
+        "emailSent": { "type": "boolean", "description": "Whether dispatch succeeded" },
+        "recipient": { "type": "string", "description": "Recipient address" }
+      },
+      "required": ["id", "type", "sentAt", "emailSent", "recipient"]
+    }
+  },
+  "firestore": {
+    "websites": {
+      "schema": { "$ref": "#/entities/Website" },
+      "description": "Active clients websites under protection"
+    },
+    "monitoring_logs": {
+      "schema": { "$ref": "#/entities/MonitoringLog" },
+      "description": "Historical telemetry logs for 24h performance assessments"
+    },
+    "alerts": {
+      "schema": { "$ref": "#/entities/Alert" },
+      "description": "Dispatched email incidents audit trail"
+    },
+    "daily_reports": {
+      "schema": { "$ref": "#/entities/DailyReport" },
+      "description": "Google Gemini generated infrastructure reports"
+    },
+    "weekly_reports": {
+      "schema": { "$ref": "#/entities/ExtendedReport" },
+      "description": "Weekly generated infrastructure performance reports"
+    },
+    "monthly_reports": {
+      "schema": { "$ref": "#/entities/ExtendedReport" },
+      "description": "Monthly generated infrastructure SLA reports"
+    },
+    "yearly_reports": {
+      "schema": { "$ref": "#/entities/ExtendedReport" },
+      "description": "Yearly generated infrastructure strategic outlook reports"
+    },
+    "sent_reports": {
+      "schema": { "$ref": "#/entities/SentReport" },
+      "description": "Dispatched report emails tracking ledger"
+    }
+  }
+}
